@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  server-component:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: server-component
+    volumes:
+      - ./bin:/app/bin
+      - ./.env:/.env
+    command: /app/bin/simple-vpn server
+    privileged: true
+    networks:
+      - vpn-network
+
+  client-component:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: client-component
+    volumes:
+      - ./bin:/app/bin
+      - ./.env:/.env
+    command: /app/bin/simple-vpn client
+    privileged: true
+    networks:
+      - vpn-network
+    depends_on:
+      - server-component
+
+networks:
+  vpn-network:
